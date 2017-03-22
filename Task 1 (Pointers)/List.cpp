@@ -82,15 +82,15 @@ void Swap(char** a, char** b)
 	*b = temporary_pointer;
 }
 
-void TrimMemory(char** list) 
+void TryToTrimMemory(char** list) 
 {
 	int size = StringListSize(list);
 	int capacity = StringListCapacity(list);
 
-	//trim memory to 75% if capacity 2 time more than real size
+	//trim memory to 1.5 of real size if capacity 2 time more than real size
 	if (capacity / size > 2) 
 	{
-		int new_capacity = (capacity * 3) / 4;
+		int new_capacity = size * 1.5;
 
 		char** new_memory = reinterpret_cast<char**> (realloc(list, new_capacity * sizeof(char**)));
 
@@ -104,33 +104,40 @@ void TrimMemory(char** list)
 }
 
 void StringListRemove(char** list, char* str)
-{
+{	
 	int index_to_remove = StringListIndexOf(list, str);
 	//Nothing to delete
 	if (index_to_remove == -1) return;
 
-	int size = StringListSize(list);
-
-	//move elements for fill a gap
-	for (int i = index_to_remove; i < size - 1; i++)
+	while (index_to_remove != -1)
 	{
-		if (i == 0) 
+		int size = StringListSize(list);
+
+		//move elements for fill a gap
+		for (int i = index_to_remove; i < size - 1; i++)
 		{
-			int capacity = StringListCapacity(list);
-			Swap(&list[0], &list[1]);
-			//resize strings and copy capacity
-			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
-			list[0][strlen(list[0]) + 1] = capacity;
+			//if it's the first string - we need to save capacity
+			if (i == 0)
+			{
+				int capacity = StringListCapacity(list);
+				Swap(&list[0], &list[1]);
+				//resize strings and copy capacity
+				list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
+				list[0][strlen(list[0]) + 1] = capacity;
+			}
+			else
+			{
+				Swap(&list[i], &list[i + 1]);
+			}
 		}
-		else
-		{
-			Swap(&list[i], &list[i+1]);
-		}
+
+		free(list[size - 1]);
+		list[size - 1] = nullptr;
+
+		index_to_remove = StringListIndexOf(list, str);
 	}
 
-	free(list[size-1]);
-	list[size-1] = nullptr;
-	TrimMemory(list);
+	TryToTrimMemory(list);
 }
 
 int StringListSize(char** list)

@@ -10,7 +10,7 @@ void StringListAdd(char*** list, char* str);
 /* Swap two strings. */
 void Swap(char** a, char** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
-void TrimMemory(char** list);
+void TryToTrimMemory(char** list);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
