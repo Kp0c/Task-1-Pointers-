@@ -23,14 +23,64 @@ int main()
 	char** myList;
 	StringListInit(&myList);
 
-	StringListAdd(myList, "qqwe");
-	StringListAdd(myList, "qqweqwe");
-	StringListAdd(myList, "qqqwewe");
-	StringListAdd(myList, "qwe");
+	StringListAdd(&myList, "abcd");
+	StringListAdd(&myList, "abcc");
+	StringListAdd(&myList, "ac");
+	StringListAdd(&myList, "ab");
+	StringListAdd(&myList, "ab");
+	StringListAdd(&myList, "ab");
+	StringListAdd(&myList, "abcsadfc");
+	StringListAdd(&myList, "acgfh");
+	StringListAdd(&myList, "abvbn");
+	StringListAdd(&myList, "abcvbn");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abawed");
+	StringListAdd(&myList, "abaweqwed");
+	StringListAdd(&myList, "abawedew");
+	StringListAdd(&myList, "abawqweed");
 
-	StringListRemove(myList, "qqweqwe");
+	printList(myList);
+	printCapacity(myList);
 
-	cout << myList[StringListIndexOf(myList, "qwe")] << endl;
+	StringListSort(myList);
+
+	StringListRemoveDuplicates(myList);
+
+	StringListReplaceInStrings(myList, "ab", "absdsd");
 
 	printList(myList);
 	printCapacity(myList);
