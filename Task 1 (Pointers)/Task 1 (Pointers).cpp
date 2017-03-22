@@ -92,7 +92,7 @@ void StringListAdd(char ** list, char * str)
 int StringListSize(char ** list)
 {
 	int index = 0;
-	while (strlen(list[index]) != 0)
+	while (*list[index] != '\0')
 	{
 		index++;
 	}
