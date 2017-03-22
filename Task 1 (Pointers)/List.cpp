@@ -183,7 +183,7 @@ void StringListRemoveDuplicates(char** list)
 				//we delete 1 element, so we need to decrement j for don't miss any element
 				j--;
 			}
-	//don't need to trim memory, because it's already done in StringListRemove function
+	TryToTrimMemory(list);
 }
 
 void StringListReplaceInStrings(char** list, char* before, char* after)
