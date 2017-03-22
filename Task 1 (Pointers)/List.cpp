@@ -2,13 +2,15 @@
 
 #include "List.h"
 
+const int INITIAL_CAPACITY = 10;
+
 void StringListInit(char*** list)
 {
 	//allocate memory for the first 10 strings
 	*list = reinterpret_cast<char**>(calloc(10, sizeof(char**)));
-	//allocate memory for \0 and capaity info
+	//allocate memory for \0 and capacity info
 	(*list)[0] = reinterpret_cast<char*>(calloc(2, sizeof(char*)));
-	(*list)[0][1] = 10;
+	(*list)[0][1] = INITIAL_CAPACITY;
 }
 
 void StringListDestroy(char*** list)
@@ -18,6 +20,7 @@ void StringListDestroy(char*** list)
 	{
 		if ((*list)[i])
 			free((*list)[i]);
+
 		(*list)[i] = nullptr;
 	}
 
@@ -32,20 +35,19 @@ void StringListAdd(char*** list, char* str)
 	if (size + 2 > StringListCapacity(*list))
 	{
 		//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
-		char newSize = (int)(size*1.5);
-		char** newMem = reinterpret_cast<char**> (realloc(*list, newSize * sizeof(char**)));
+		char new_capacity = (int)(size*1.5);
+		char** new_memory = reinterpret_cast<char**> (realloc(*list, new_capacity * sizeof(char**)));
 		//if memory allocated right
-		if (newMem != nullptr)
+		if (new_memory != nullptr)
 		{
-			*list = newMem;
-			//fill new memory by \0
-			memset(*list + size, '\0', (newSize - size) * sizeof(char*));
-			for (int i = size + 1; i < newSize; i++)
+			*list = new_memory;
+			//set all new elements by nullptr
+			for (int i = size + 1; i < new_capacity; i++)
 			{
 				(*list)[i] = nullptr;
 			}
 			//set new capacity
-			(*list[0])[strlen((*list)[0]) + 1] = newSize;
+			(*list[0])[strlen((*list)[0]) + 1] = new_capacity;
 		}
 		else
 		{
@@ -54,76 +56,81 @@ void StringListAdd(char*** list, char* str)
 	}
 
 	//if it's the first string, then push capacity after it
-	if (size == 0) {
+	if (size == 0) 
+	{
 		char capacity = StringListCapacity(*list);
-		int stringLength = strlen(str);
+		int string_length = strlen(str);
 		//allocate memory for string and capacity
-		(*list)[0] = reinterpret_cast<char*>(malloc(stringLength + 2));
+		(*list)[0] = reinterpret_cast<char*>(malloc(string_length + 2));
 		//insert string
 		strcpy((*list)[0], str);
 		//insert capacity
-		(*list)[0][stringLength + 1] = capacity;
+		(*list)[0][string_length + 1] = capacity;
 	}
-	else {
+	else 
+	{
 		(*list)[size] = reinterpret_cast<char*>(malloc(strlen(str) + 1));
 		strcpy((*list)[size], str);
 	}
 }
 
-void swap(char** a, char** b) {
-	char* tmpPtr;
-	tmpPtr = *a;
+void Swap(char** a, char** b) 
+{
+	char* temporary_pointer;
+	temporary_pointer = *a;
 	*a = *b;
-	*b = tmpPtr;
+	*b = temporary_pointer;
 }
 
-void trimMemory(char** list) {
+void TrimMemory(char** list) 
+{
 	int size = StringListSize(list);
 	int capacity = StringListCapacity(list);
 
-	//trim memory if capacity 2 time more than real size
-	if (capacity / size > 2) {
-		int newCapacity = (capacity * 3) / 4;
+	//trim memory to 75% if capacity 2 time more than real size
+	if (capacity / size > 2) 
+	{
+		int new_capacity = (capacity * 3) / 4;
 
-		char** newMem = reinterpret_cast<char**> (realloc(list, newCapacity * sizeof(char**)));
+		char** new_memory = reinterpret_cast<char**> (realloc(list, new_capacity * sizeof(char**)));
 
 		//if memory allocated - assign it to list, else do nothing, because it's not important
-		if (newMem != nullptr)
+		if (new_memory != nullptr)
 		{
-			list = newMem;
-			list[0][strlen(list[0]) + 1] = newCapacity;
+			list = new_memory;
+			list[0][strlen(list[0]) + 1] = new_capacity;
 		}
 	}
 }
 
 void StringListRemove(char** list, char* str)
 {
-	int indexToRemove = StringListIndexOf(list, str);
+	int index_to_remove = StringListIndexOf(list, str);
 	//Nothing to delete
-	if (indexToRemove == -1) return;
+	if (index_to_remove == -1) return;
 
 	int size = StringListSize(list);
 
 	//move elements for fill a gap
-	for (int i = indexToRemove; i < size - 1; i++)
+	for (int i = index_to_remove; i < size - 1; i++)
 	{
 		if (i == 0) 
 		{
 			int capacity = StringListCapacity(list);
-			swap(&list[0], &list[1]);
+			Swap(&list[0], &list[1]);
 			//resize strings and copy capacity
 			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
 			list[0][strlen(list[0]) + 1] = capacity;
 		}
 		else
 		{
-			swap(&list[i], &list[i+1]);
+			Swap(&list[i], &list[i+1]);
 		}
 	}
 
 	free(list[size-1]);
 	list[size-1] = nullptr;
-	trimMemory(list);
+	TrimMemory(list);
 }
 
 int StringListSize(char** list)
@@ -145,14 +152,15 @@ int StringListIndexOf(char** list, char* str)
 {
 	for (int i = 0; list[i] != nullptr && list[i][0] != '\0'; i++)
 	{
-		if (strcmp(list[i], str) == 0) {
+		if (strcmp(list[i], str) == 0) 
+		{
 			return i;
 		}
 	}
 	return -1;
 }
 
-void StringListRemoveDuplicates(char ** list)
+void StringListRemoveDuplicates(char** list)
 {
 	int size = StringListSize(list);
 
@@ -170,7 +178,7 @@ void StringListRemoveDuplicates(char ** list)
 	//don't need to trim memory, because it's already done in StringListRemove function
 }
 
-void StringListReplaceInStrings(char ** list, char * before, char * after)
+void StringListReplaceInStrings(char** list, char* before, char* after)
 {
 	int index = StringListIndexOf(list, before);
 	while (index != -1) {

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "stdafx.h"
-
 /* Initializes list */
 void StringListInit(char*** list);
 /* Destroy list and set pointer to nullptr. */
@@ -10,9 +8,9 @@ void StringListDestroy(char*** list);
 /* Inserts value at the end of the list. */
 void StringListAdd(char*** list, char* str);
 /* Swap two strings. */
-void swap(char ** a, char ** b);
+void Swap(char** a, char** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
-void trimMemory(char ** list);
+void TrimMemory(char** list);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
@@ -28,6 +26,6 @@ void StringListRemoveDuplicates(char** list);
 /* Replaces every occurrence of the before, in each of the string lists's strings, with after. */
 void StringListReplaceInStrings(char** list, char* before, char* after);
 /* Comparator for qsort */
-int Comparator(const void * first, const void * second);
+int Comparator(const void* first, const void* second);
 /* Sorts the list of strings in ascending order */
 void StringListSort(char** list);

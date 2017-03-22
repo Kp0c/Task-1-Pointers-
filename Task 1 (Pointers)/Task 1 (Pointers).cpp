@@ -2,9 +2,6 @@
 
 #include "Task 1 (Pointers).h"
 
-#include "List.h"
-#include <iostream>
-
 using namespace std;
 
 void printList(char** list) {
