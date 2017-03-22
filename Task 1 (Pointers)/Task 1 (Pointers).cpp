@@ -23,10 +23,14 @@ int main()
 	char** myList;
 	StringListInit(&myList);
 
-	for (int i = 0; i < 10; i++)
-	{
-		StringListAdd(myList, "Hello");
-	}
+	StringListAdd(myList, "qqwe");
+	StringListAdd(myList, "qqweqwe");
+	StringListAdd(myList, "qqqwewe");
+	StringListAdd(myList, "qwe");
+
+	StringListRemove(myList, "qqweqwe");
+
+	cout << myList[StringListIndexOf(myList, "qwe")] << endl;
 
 	printList(myList);
 	printCapacity(myList);
