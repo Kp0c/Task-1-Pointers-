@@ -44,10 +44,11 @@ int main()
 void StringListInit(char*** list)
 {
 	*list = reinterpret_cast<char**>(calloc(10, sizeof(char**)));
-	for (size_t i = 0; i < 10; i++)
+	/*for (size_t i = 0; i < 10; i++)
 	{
 		(*list)[i] = reinterpret_cast<char*>(calloc(50, sizeof(char*)));
-	}
+	}*/
+	(*list)[0] = reinterpret_cast<char*>(calloc(2, sizeof(char*)));
 	(*list)[0][1] = 10;
 }
 
