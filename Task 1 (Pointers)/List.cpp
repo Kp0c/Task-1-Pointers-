@@ -11,7 +11,7 @@ void StringListInit(char*** list)
 	(*list)[0][1] = 10;
 }
 
-void StringListDestroy(char *** list)
+void StringListDestroy(char*** list)
 {
 	int size = StringListSize(*list);
 	for (int i = 0; i < size; i++)
@@ -25,7 +25,7 @@ void StringListDestroy(char *** list)
 	*list = nullptr;
 }
 
-void StringListAdd(char ** list, char * str)
+void StringListAdd(char** list, char* str)
 {
 	int size = StringListSize(list);
 	//size + 2 because we always need empty string in rhe ned for determine end of list
@@ -66,7 +66,23 @@ void StringListAdd(char ** list, char * str)
 	}
 }
 
-int StringListSize(char ** list)
+void StringListRemove(char ** list, char * str)
+{
+	int indexToRemove = StringListIndexOf(list, str);
+	int size = StringListSize(list);
+
+	//move elements for fill a gap
+	for (int i = indexToRemove; i < size - 1; i++)
+	{
+		strcpy(list[i], list[i + 1]);
+	}
+
+	free(list[size-1]);
+	list[size-1] = nullptr;
+	//TODO: trim memory if it needed
+}
+
+int StringListSize(char** list)
 {
 	int index = 0;
 	while (list[index] != nullptr && list[index][0] != '\0')
@@ -76,7 +92,18 @@ int StringListSize(char ** list)
 	return index;
 }
 
-inline char StringListCapacity(char ** list)
+inline char StringListCapacity(char** list)
 {
 	return list[0][strlen(list[0]) + 1];
+}
+
+int StringListIndexOf(char** list, char* str)
+{
+	for (int i = 0; list[i] != nullptr && list[i][0] != '\0'; i++)
+	{
+		if (strcmp(list[i], str) == 0) {
+			return i;
+		}
+	}
+	return -1;
 }
