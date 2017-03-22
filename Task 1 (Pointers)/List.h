@@ -23,5 +23,7 @@ int StringListIndexOf(char** list, char* str);
 void StringListRemoveDuplicates(char** list);
 /* Replaces every occurrence of the before, in each of the string lists's strings, with after. */
 void StringListReplaceInStrings(char** list, char* before, char* after);
+/* Comparator for qsort */
+int comparator(const void * first, const void * second);
 /* Sorts the list of strings in ascending order */
 void StringListSort(char** list);

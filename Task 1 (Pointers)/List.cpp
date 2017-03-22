@@ -66,15 +66,34 @@ void StringListAdd(char** list, char* str)
 	}
 }
 
-void StringListRemove(char ** list, char * str)
+void StringListRemove(char** list, char* str)
 {
 	int indexToRemove = StringListIndexOf(list, str);
+	//Nothing to delete
+	if (indexToRemove == -1) return;
+
 	int size = StringListSize(list);
 
 	//move elements for fill a gap
+	char* tmpPtr;
 	for (int i = indexToRemove; i < size - 1; i++)
 	{
-		strcpy(list[i], list[i + 1]);
+		if (i == 0) 
+		{
+			int capacity = StringListCapacity(list);
+			tmpPtr = list[0];
+			list[0] = list[1];
+			list[1] = tmpPtr;
+			//resize strings and copy capacity
+			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
+			list[0][strlen(list[0]) + 1] = capacity;
+		}
+		else
+		{
+			tmpPtr = list[i];
+			list[i] = list[i+1];
+			list[i+1] = tmpPtr;
+		}
 	}
 
 	free(list[size-1]);
@@ -106,4 +125,65 @@ int StringListIndexOf(char** list, char* str)
 		}
 	}
 	return -1;
+}
+
+void StringListRemoveDuplicates(char ** list)
+{
+	int size = StringListSize(list);
+
+	//compare all elements
+	for (int i = 0; i < size - 1; i++)
+	{
+		for (int j = i+1; j < size; j++)
+		{
+			if (strcmp(list[i], list[j]) == 0)
+			{
+				StringListRemove(list, list[j]);
+				//list resized, so new size is..
+				size = StringListSize(list);
+				//we delete 1 element, so we need to decrement j for don't miss any element
+				j--;
+			}
+		}
+	}
+}
+
+void StringListReplaceInStrings(char ** list, char * before, char * after)
+{
+	int index = StringListIndexOf(list, before);
+	while (index != -1) {
+		//if it's the first index, then we need to save capacity
+		if (index == 0)
+		{
+			int capacity = StringListCapacity(list);
+			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(after) + 2));
+			strcpy(list[index], after);
+			list[0][strlen(list[0]) + 1] = capacity;
+		}
+		else
+		{
+			list[index] = reinterpret_cast<char*>(realloc(list[index], strlen(after) + 1));
+			strcpy(list[index], after);
+		}
+		index = StringListIndexOf(list, before);
+	}
+}
+
+int Comparator(const void* first, const void* second) {
+	const char **a = reinterpret_cast<const char**>(const_cast<void*>(first));
+	const char **b = reinterpret_cast<const char**>(const_cast<void*>(second));
+
+	return strcmp(*a, *b);
+}
+
+void StringListSort(char** list)
+{
+	//save capacity
+	int capacity = StringListCapacity(list);
+
+	qsort(list, StringListSize(list), sizeof(char*), Comparator);
+
+	//restore capacity value
+	list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
+	list[0][strlen(list[0]) + 1] = capacity;
 }
