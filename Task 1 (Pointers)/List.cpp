@@ -103,37 +103,38 @@ void TryToTrimMemory(char** list)
 	}
 }
 
+void StringListRemoveElementAt(char** list, int index_to_remove) {
+	int size = StringListSize(list);
+
+	//move elements for fill a gap
+	for (int i = index_to_remove; i < size - 1; i++)
+	{
+		//if it's the first string - we need to save capacity
+		if (i == 0)
+		{
+			int capacity = StringListCapacity(list);
+			Swap(&list[0], &list[1]);
+			//resize strings and copy capacity
+			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
+			list[0][strlen(list[0]) + 1] = capacity;
+		}
+		else
+		{
+			Swap(&list[i], &list[i + 1]);
+		}
+	}
+
+	free(list[size - 1]);
+	list[size - 1] = nullptr;
+}
+
 void StringListRemove(char** list, char* str)
 {	
 	int index_to_remove = StringListIndexOf(list, str);
-	//Nothing to delete
-	if (index_to_remove == -1) return;
 
 	while (index_to_remove != -1)
 	{
-		int size = StringListSize(list);
-
-		//move elements for fill a gap
-		for (int i = index_to_remove; i < size - 1; i++)
-		{
-			//if it's the first string - we need to save capacity
-			if (i == 0)
-			{
-				int capacity = StringListCapacity(list);
-				Swap(&list[0], &list[1]);
-				//resize strings and copy capacity
-				list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
-				list[0][strlen(list[0]) + 1] = capacity;
-			}
-			else
-			{
-				Swap(&list[i], &list[i + 1]);
-			}
-		}
-
-		free(list[size - 1]);
-		list[size - 1] = nullptr;
-
+		StringListRemoveElementAt(list, index_to_remove);
 		index_to_remove = StringListIndexOf(list, str);
 	}
 
@@ -176,7 +177,7 @@ void StringListRemoveDuplicates(char** list)
 		for (int j = i+1; j < size; j++)
 			if (strcmp(list[i], list[j]) == 0)
 			{
-				StringListRemove(list, list[j]);
+				StringListRemoveElementAt(list, j);
 				//list resized, so new size is..
 				size = StringListSize(list);
 				//we delete 1 element, so we need to decrement j for don't miss any element

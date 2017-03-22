@@ -11,6 +11,8 @@ void StringListAdd(char*** list, char* str);
 void Swap(char** a, char** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
 void TryToTrimMemory(char** list);
+/* Remove element at index_to_remove. */
+void StringListRemoveElementAt(char** list, int index_to_remove);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
