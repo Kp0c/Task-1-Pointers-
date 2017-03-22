@@ -26,9 +26,12 @@ int main()
 	///////////////////////////////////////////////////
 	for (int i = 0; i < 16; i++)
 	{
-		//char* buffer;
-		//sprintf(buffer, "Hello, %d");
-		StringListAdd(myList, /*buffer*/ "Hello");
+		char* buffer = reinterpret_cast<char*>(malloc(10 * sizeof(char*)));
+		sprintf(buffer, "Hello, %d", i);
+		StringListAdd(myList, /**/buffer/**//* "Hello"*/);
+
+		printList(myList);
+		printCapacity(myList);
 	}
 
 	printList(myList);
@@ -64,17 +67,13 @@ void StringListAdd(char ** list, char * str)
 	int size = StringListSize(list);
 	if (size + 2 > list[size][1]) 
 	{
-		// TODO: add capacity
 		char newSize = size*1.5;
-		//list = reinterpret_cast<char**> (realloc(list, newSize));
 		char** newMem = reinterpret_cast<char**> (realloc(list, newSize*sizeof(char**)));
 		if (newMem != nullptr)
 		{
-			//memcpy(newMem, list, newSize);
-			//free(list);
 			list = newMem;
 
-			for (char i = size; i < newSize; i++)
+			for (char i = size+1; i < newSize; i++)
 			{
 				list[i] = reinterpret_cast<char*>(calloc(50, sizeof(char*)));
 			}
