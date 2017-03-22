@@ -25,23 +25,27 @@ void StringListDestroy(char*** list)
 	*list = nullptr;
 }
 
-void StringListAdd(char** list, char* str)
+void StringListAdd(char*** list, char* str)
 {
-	int size = StringListSize(list);
+	int size = StringListSize(*list);
 	//size + 2 because we always need empty string in the end for determine end of list
-	if (size + 2 > StringListCapacity(list))
+	if (size + 2 > StringListCapacity(*list))
 	{
 		//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
 		char newSize = (int)(size*1.5);
-		char** newMem = reinterpret_cast<char**> (realloc(list, newSize * sizeof(char**)));
+		char** newMem = reinterpret_cast<char**> (realloc(*list, newSize * sizeof(char**)));
 		//if memory allocated right
 		if (newMem != nullptr)
 		{
-			list = newMem;
+			*list = newMem;
 			//fill new memory by \0
-			memset(list + size, '\0', (newSize - size) * sizeof(char*));
+			memset(*list + size, '\0', (newSize - size) * sizeof(char*));
+			for (int i = size + 1; i < newSize; i++)
+			{
+				(*list)[i] = nullptr;
+			}
 			//set new capacity
-			list[0][strlen(list[0]) + 1] = newSize;
+			(*list[0])[strlen((*list)[0]) + 1] = newSize;
 		}
 		else
 		{
@@ -51,18 +55,18 @@ void StringListAdd(char** list, char* str)
 
 	//if it's the first string, then push capacity after it
 	if (size == 0) {
-		char capacity = StringListCapacity(list);
+		char capacity = StringListCapacity(*list);
 		int stringLength = strlen(str);
 		//allocate memory for string and capacity
-		list[0] = reinterpret_cast<char*>(malloc(stringLength + 2));
+		(*list)[0] = reinterpret_cast<char*>(malloc(stringLength + 2));
 		//insert string
-		strcpy(list[0], str);
+		strcpy((*list)[0], str);
 		//insert capacity
-		list[0][stringLength + 1] = capacity;
+		(*list)[0][stringLength + 1] = capacity;
 	}
 	else {
-		list[size] = reinterpret_cast<char*>(malloc(strlen(str) + 1));
-		strcpy(list[size], str);
+		(*list)[size] = reinterpret_cast<char*>(malloc(strlen(str) + 1));
+		strcpy((*list)[size], str);
 	}
 }
 

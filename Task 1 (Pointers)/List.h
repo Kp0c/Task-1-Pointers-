@@ -8,7 +8,7 @@ void StringListInit(char*** list);
 void StringListDestroy(char*** list);
 
 /* Inserts value at the end of the list. */
-void StringListAdd(char** list, char* str);
+void StringListAdd(char*** list, char* str);
 /* Swap two strings. */
 void swap(char ** a, char ** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
