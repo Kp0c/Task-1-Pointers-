@@ -28,7 +28,7 @@ void StringListDestroy(char*** list)
 void StringListAdd(char** list, char* str)
 {
 	int size = StringListSize(list);
-	//size + 2 because we always need empty string in rhe ned for determine end of list
+	//size + 2 because we always need empty string in the end for determine end of list
 	if (size + 2 > StringListCapacity(list))
 	{
 		//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
@@ -73,6 +73,25 @@ void swap(char** a, char** b) {
 	*b = tmpPtr;
 }
 
+void trimMemory(char** list) {
+	int size = StringListSize(list);
+	int capacity = StringListCapacity(list);
+
+	//trim memory if capacity 2 time more than real size
+	if (capacity / size > 2) {
+		int newCapacity = (capacity * 3) / 4;
+
+		char** newMem = reinterpret_cast<char**> (realloc(list, newCapacity * sizeof(char**)));
+
+		//if memory allocated - assign it to list, else do nothing, because it's not important
+		if (newMem != nullptr)
+		{
+			list = newMem;
+			list[0][strlen(list[0]) + 1] = newCapacity;
+		}
+	}
+}
+
 void StringListRemove(char** list, char* str)
 {
 	int indexToRemove = StringListIndexOf(list, str);
@@ -80,14 +99,13 @@ void StringListRemove(char** list, char* str)
 	if (indexToRemove == -1) return;
 
 	int size = StringListSize(list);
-	int capacity = StringListCapacity(list);
 
 	//move elements for fill a gap
-	char* tmpPtr;
 	for (int i = indexToRemove; i < size - 1; i++)
 	{
 		if (i == 0) 
 		{
+			int capacity = StringListCapacity(list);
 			swap(&list[0], &list[1]);
 			//resize strings and copy capacity
 			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
@@ -101,7 +119,7 @@ void StringListRemove(char** list, char* str)
 
 	free(list[size-1]);
 	list[size-1] = nullptr;
-	//TODO: trim memory if it needed
+	trimMemory(list);
 }
 
 int StringListSize(char** list)
@@ -136,9 +154,7 @@ void StringListRemoveDuplicates(char ** list)
 
 	//compare all elements
 	for (int i = 0; i < size - 1; i++)
-	{
 		for (int j = i+1; j < size; j++)
-		{
 			if (strcmp(list[i], list[j]) == 0)
 			{
 				StringListRemove(list, list[j]);
@@ -147,8 +163,7 @@ void StringListRemoveDuplicates(char ** list)
 				//we delete 1 element, so we need to decrement j for don't miss any element
 				j--;
 			}
-		}
-	}
+	//don't need to trim memory, because it's already done in StringListRemove function
 }
 
 void StringListReplaceInStrings(char ** list, char * before, char * after)

@@ -4,13 +4,15 @@
 
 /* Initializes list */
 void StringListInit(char*** list);
-/* Destroy list and set pointer to NULL. */
+/* Destroy list and set pointer to nullptr. */
 void StringListDestroy(char*** list);
 
 /* Inserts value at the end of the list. */
 void StringListAdd(char** list, char* str);
 /* Swap two strings. */
 void swap(char ** a, char ** b);
+/* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
+void trimMemory(char ** list);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
