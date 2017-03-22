@@ -66,6 +66,13 @@ void StringListAdd(char** list, char* str)
 	}
 }
 
+void swap(char** a, char** b) {
+	char* tmpPtr;
+	tmpPtr = *a;
+	*a = *b;
+	*b = tmpPtr;
+}
+
 void StringListRemove(char** list, char* str)
 {
 	int indexToRemove = StringListIndexOf(list, str);
@@ -73,6 +80,7 @@ void StringListRemove(char** list, char* str)
 	if (indexToRemove == -1) return;
 
 	int size = StringListSize(list);
+	int capacity = StringListCapacity(list);
 
 	//move elements for fill a gap
 	char* tmpPtr;
@@ -80,19 +88,14 @@ void StringListRemove(char** list, char* str)
 	{
 		if (i == 0) 
 		{
-			int capacity = StringListCapacity(list);
-			tmpPtr = list[0];
-			list[0] = list[1];
-			list[1] = tmpPtr;
+			swap(&list[0], &list[1]);
 			//resize strings and copy capacity
 			list[0] = reinterpret_cast<char*>(realloc(list[0], strlen(list[0]) + 2));
 			list[0][strlen(list[0]) + 1] = capacity;
 		}
 		else
 		{
-			tmpPtr = list[i];
-			list[i] = list[i+1];
-			list[i+1] = tmpPtr;
+			swap(&list[i], &list[i+1]);
 		}
 	}
 

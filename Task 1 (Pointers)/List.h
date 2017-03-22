@@ -9,6 +9,8 @@ void StringListDestroy(char*** list);
 
 /* Inserts value at the end of the list. */
 void StringListAdd(char** list, char* str);
+/* Swap two strings. */
+void swap(char ** a, char ** b);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
