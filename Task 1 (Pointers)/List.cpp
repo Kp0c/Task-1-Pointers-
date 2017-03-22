@@ -6,26 +6,32 @@ const int INITIAL_CAPACITY = 10;
 
 void StringListInit(char*** list)
 {
-	//allocate memory for the first 10 strings
-	*list = reinterpret_cast<char**>(calloc(10, sizeof(char**)));
-	//allocate memory for \0 and capacity info
-	(*list)[0] = reinterpret_cast<char*>(calloc(2, sizeof(char*)));
-	(*list)[0][1] = INITIAL_CAPACITY;
+	if (*list == nullptr)
+	{
+		//allocate memory for the first 10 strings
+		*list = reinterpret_cast<char**>(calloc(10, sizeof(char**)));
+		//allocate memory for \0 and capacity info
+		(*list)[0] = reinterpret_cast<char*>(calloc(2, sizeof(char*)));
+		(*list)[0][1] = INITIAL_CAPACITY;
+	}
 }
 
 void StringListDestroy(char*** list)
 {
-	int size = StringListSize(*list);
-	for (int i = 0; i < size; i++)
+	if (*list != nullptr)
 	{
-		if ((*list)[i])
-			free((*list)[i]);
+		int size = StringListSize(*list);
+		for (int i = 0; i < size; i++)
+		{
+			if ((*list)[i])
+				free((*list)[i]);
 
-		(*list)[i] = nullptr;
+			(*list)[i] = nullptr;
+		}
+
+		free(*list);
+		*list = nullptr;
 	}
-
-	free(*list);
-	*list = nullptr;
 }
 
 void StringListAdd(char*** list, char* str)
@@ -208,8 +214,8 @@ void StringListReplaceInStrings(char** list, char* before, char* after)
 }
 
 int Comparator(const void* first, const void* second) {
-	const char **a = reinterpret_cast<const char**>(const_cast<void*>(first));
-	const char **b = reinterpret_cast<const char**>(const_cast<void*>(second));
+	const char** a = reinterpret_cast<const char**>(const_cast<void*>(first));
+	const char** b = reinterpret_cast<const char**>(const_cast<void*>(second));
 
 	return strcmp(*a, *b);
 }
