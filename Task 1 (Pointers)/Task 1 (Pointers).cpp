@@ -25,7 +25,6 @@ int main()
 	StringListAdd(&myList, "ac");
 	StringListAdd(&myList, "ab");
 	StringListAdd(&myList, "ab");
-	StringListAdd(&myList, "ab");
 	StringListAdd(&myList, "abcsadfc");
 	StringListAdd(&myList, "acgfh");
 	StringListAdd(&myList, "abvbn");
@@ -64,18 +63,18 @@ int main()
 	StringListAdd(&myList, "abawed");
 	StringListAdd(&myList, "abawed");
 	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
 	StringListAdd(&myList, "abaweqwed");
 	StringListAdd(&myList, "abawedew");
 	StringListAdd(&myList, "abawqweed");
+	
+	//StringListRemove(myList, "abawed");
+	StringListRemoveDuplicates(myList);
 
 	printList(myList);
 	printCapacity(myList);
 
 	StringListSort(myList);
 
-	StringListRemoveDuplicates(myList);
 
 	StringListReplaceInStrings(myList, "ab", "absdsd");
 
