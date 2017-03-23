@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Task 1 (Pointers).h"
+#include "Task_1_Pointers.h"
 
 using namespace std;
 
