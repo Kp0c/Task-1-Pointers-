@@ -25,12 +25,10 @@ void StringListDestroy(char*** list)
 	if (list != nullptr && StringListIsValid(*list))
 	{
 		int size = StringListSize(*list);
-		for (int i = 0; i < size; i++)
+		for (int i = 1; i < size + 1; i++)
 		{
-			if ((*list)[i])
-			{
-				free((*list)[i]);
-			}
+			printf("%s", (*list)[i]);
+			free((*list)[i]);
 
 			(*list)[i] = nullptr;
 		}
