@@ -2,18 +2,19 @@
 
 #include "List.h"
 
-const int INITIAL_CAPACITY = 10;
+const unsigned INITIAL_CAPACITY = 10;
 
 void StringListInit(char*** list, bool force)
 {
 		if (force || *list == nullptr)
 		{
-			//allocate memory for the first INITIAL_CAPACITY strings
-			*list = (char**)calloc(INITIAL_CAPACITY, sizeof(char**));
-			//allocate memory for capacity and size info
-			**list = (char*)calloc(2, sizeof(int));
-			((int*)**list)[0] = INITIAL_CAPACITY;
-			((int*)**list)[1] = 0;
+			void* temporary_pointer = malloc(INITIAL_CAPACITY * sizeof(char*) + 2 * sizeof(unsigned));
+			memset(temporary_pointer, 0, INITIAL_CAPACITY * sizeof(char*) + 2 * sizeof(unsigned));
+
+			unsigned* capacity = (unsigned*)temporary_pointer;
+			*capacity = INITIAL_CAPACITY;
+			//size -> capacity + 1 
+			*list = (char**)(capacity + 2);
 		}
 		else
 		{
@@ -26,15 +27,14 @@ void StringListDestroy(char*** list)
 	if (list != nullptr && StringListIsValid(*list))
 	{
 		int size = StringListSize(*list);
-
-		for (int i = 1; i < size + 1; i++)
+		for (int i = 0; i < size; i++)
 		{
-			if((*list)[i])
-				free((*list)[i]);
+			free((*list)[i]);
 			(*list)[i] = nullptr;
 		}
-
-		free(*list);
+		void* memory_for_free = ((unsigned*)*list) - 2;
+		//delete capacity and size too
+		free(memory_for_free);
 		*list = nullptr;
 	}
 }
@@ -43,24 +43,27 @@ void StringListAdd(char*** list, char* str)
 {
 	if (list != nullptr && StringListIsValid(*list))
 	{
-		int size = StringListSize(*list);
-		//size + 2 because first element, where we keep special info we don't calculate
-		if (size + 2 > StringListCapacity(*list))
+		unsigned size = StringListSize(*list);
+		if (size + 1 > StringListCapacity(*list))
 		{
 			//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
-			int new_capacity = (int)(size * 1.5) + 1;
-			char** new_memory = (char**)realloc(*list, new_capacity * sizeof(char**));
+			unsigned new_capacity = (int)(size * 1.5) + 1;
+			void* new_memory = (unsigned*)&((*list)[-2]);
+			//(unsigned*)(*list)
+			new_memory = (void*)realloc(new_memory, new_capacity * sizeof(char**) + 2 * sizeof(unsigned));
 			//if memory allocated right
 			if (new_memory != nullptr)
 			{
-				*list = new_memory;
+				*list = (char**)(((unsigned*)(new_memory)) + 2);
 				//fill all new elements by nullptr
-				for (int i = size + 2; i < new_capacity; i++)
+				for (int i = size + 1; (unsigned)i < new_capacity; i++)
 				{
 					(*list)[i] = nullptr;
 				}
 				//set new capacity
-				((int*)**list)[0] = new_capacity;
+				/*unsigned* new_capacity_pointer = (unsigned*)&(*list)[-2];
+				*new_capacity_pointer = new_capacity;*/
+				SetCapacity(*list, new_capacity);
 			}
 			else
 			{
@@ -68,7 +71,9 @@ void StringListAdd(char*** list, char* str)
 			}
 		}
 		//increment size
-		size = ++(((int*)**list)[1]);
+		//unsigned* new_size_pointer = (unsigned*)&(*list)[-1];
+		//size = ++(*new_size_pointer);
+		size = (unsigned)((*list)[-1])++;
 		//add string
 		(*list)[size] = (char*)malloc(strlen(str) + 1);
 		strcpy((*list)[size], str);
@@ -86,40 +91,43 @@ void TryToTrimMemory(char** list)
 {
 	if (StringListIsValid(list))
 	{
-		int size = StringListSize(list);
-		int capacity = StringListCapacity(list);
+		unsigned size = StringListSize(list);
+		unsigned capacity = StringListCapacity(list);
 
 		//trim memory to 1.5 of real size if capacity 2 time more than real size
 		if (capacity / size > 2)
 		{
-			int new_capacity = (int)(size * 1.5) + 1;
+			unsigned new_capacity = (int)(size * 1.5) + 1;
+			//TODO: make normal realloc
 			char** new_memory = (char**)realloc(list, new_capacity * sizeof(char**));
 
 			//if memory allocated - assign it to list, else do nothing, because it's not important
 			if (new_memory != nullptr)
 			{
 				list = new_memory;
-				((int*)list[0])[0] = new_capacity;
+				//((int*)list[0])[0] = new_capacity;
+				SetCapacity(list, new_capacity);
 			}
 		}
 	}
 }
 
-void StringListRemoveElementAt(char** list, int list_index_to_remove) {
-	int size = StringListSize(list);
+void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
+	unsigned size = StringListSize(list);
 
 	//check for valid range
-	if (StringListIsValid(list) && list_index_to_remove >= 0 && list_index_to_remove <= size)
+	if (StringListIsValid(list) && list_index_to_remove >= 0 && list_index_to_remove < size)
 	{
 
 		//move elements for fill a gap
-		//size + 1 because real size bigger because info at list[0]
-		for (int i = list_index_to_remove; i < size + 1; i++)
+		for (unsigned i = list_index_to_remove; i < size; i++)
 		{
 			Swap(&list[i], &list[i + 1]);
 		}
 		//new size
-		((int*)list[0])[1] = size - 1;
+		//unsigned* new_size_pointer = (unsigned*)&(*list)[-1];
+		--list[-1];
+		//size = ++(*new_size_pointer);
 		free(list[size]);
 		list[size] = nullptr;
 	}
@@ -129,8 +137,7 @@ void StringListRemove(char** list, char* str)
 {	
 	if (StringListIsValid(list))
 	{
-		//index + 1 to convert real_index to list_index
-		int index_to_remove = StringListIndexOf(list, str) + 1;
+		int index_to_remove = StringListIndexOf(list, str);
 
 		while (index_to_remove > -1)
 		{
@@ -142,11 +149,11 @@ void StringListRemove(char** list, char* str)
 	}
 }
 
-inline int StringListSize(char** list)
+unsigned StringListSize(char** list)
 {
 	if (StringListIsValid(list))
 	{
-		return ((int*)*list)[1];
+		return (unsigned)list[-1];
 	}
 	else
 	{
@@ -154,11 +161,11 @@ inline int StringListSize(char** list)
 	}
 }
 
-inline int StringListCapacity(char** list)
+unsigned StringListCapacity(char** list)
 {
 	if (StringListIsValid(list))
 	{
-		return ((int*)*list)[0];
+		return (unsigned)list[-2];
 	}
 	else
 	{
@@ -166,28 +173,22 @@ inline int StringListCapacity(char** list)
 	}
 }
 
-inline bool StringListIsValid(char** list)
+void SetCapacity(char** list, unsigned value)
 {
-	if (list != nullptr && *list != nullptr)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	unsigned* new_capacity_pointer = (unsigned*)&list[-2];
+	*new_capacity_pointer = value;
 }
 
 int StringListIndexOf(char** list, char* str)
 {
+	unsigned size = StringListSize(list);
 	if (StringListIsValid(list))
 	{
-		for (int i = 1; list[i] != nullptr && list[i][0] != '\0'; i++)
+		for (unsigned i = 0; i < size; i++)
 		{
 			if (strcmp(list[i], str) == 0)
 			{
-				// - 1 to convert list_index to real_index
-				return i - 1;
+				return i;
 			}
 		}
 	}
@@ -205,10 +206,9 @@ void StringListRemoveDuplicates(char** list)
 		{
 			for (int j = i + 1; j < size; j++)
 			{
-				//we add 1 because at list[0] list info, list indexes is (real_index + 1)
-				if (strcmp(list[i + 1], list[j + 1]) == 0)
+				if (strcmp(list[i], list[j]) == 0)
 				{
-					StringListRemoveElementAt(list, j + 1);
+					StringListRemoveElementAt(list, j);
 					//list resized, so new size is..
 					size = StringListSize(list);
 					//we delete 1 element, so we need to decrement j for don't miss any element
@@ -226,7 +226,7 @@ void StringListReplaceInStrings(char** list, char* before, char* after)
 	if (StringListIsValid(list))
 	{
 		// index + 1 to convert list_index to real_index
-		int index = StringListIndexOf(list, before) + 1;
+		int index = StringListIndexOf(list, before);
 		while (index != -1)
 		{
 			list[index] = (char*)realloc(list[index], strlen(after) + 1);
@@ -247,6 +247,6 @@ void StringListSort(char** list)
 {
 	if (StringListIsValid(list))
 	{
-		qsort(list + 1, StringListSize(list), sizeof(char*), Comparator);
+		qsort(list, StringListSize(list), sizeof(char*), Comparator);
 	}
 }

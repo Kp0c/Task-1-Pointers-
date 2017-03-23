@@ -14,16 +14,40 @@ void Swap(char** a, char** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
 void TryToTrimMemory(char** list);
 /* Remove element at index_to_remove. */
-void StringListRemoveElementAt(char** list, int index_to_remove);
+void StringListRemoveElementAt(char** list, unsigned index_to_remove);
 /* Removes all occurrences of str in the list. */
 void StringListRemove(char** list, char* str);
 
 /* Returns the number of items in the list. */
-inline int StringListSize(char** list);
+unsigned StringListSize(char** list);
 /* Returns the capacity of the list. */
-inline int StringListCapacity(char** list);
+unsigned StringListCapacity(char** list);
+/* Set capacity to value */
+void SetCapacity(char** list, unsigned value);
 /* Check if list valid */
-inline bool StringListIsValid(char** list);
+inline bool StringListIsValid(char** list)
+{
+
+	if (list != nullptr)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+inline bool StringListIsValid(char*** list)
+{
+	if (list != nullptr)
+	{
+		return StringListIsValid(*list);
+	}
+	else
+	{
+		return false;
+	}
+}
 /* Returns the index position of the first occurrence of str in the list. */
 int StringListIndexOf(char** list, char* str);
 
