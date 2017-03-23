@@ -4,83 +4,48 @@
 
 using namespace std;
 
-void printList(char** list) {
-	for (int i = 0; i < StringListSize(list); i++)
+void printList(char** list) 
+{
+	int size = StringListSize(list);
+	for (int i = 0; i < size; i++)
 	{
-		cout << i+1 << ": " << list[i] << endl;
+		cout << i << ": " << list[i + 1] << endl;
 	}
 }
 
-void printCapacity(char** list) {
-	cout << "Capacity: " << (int)StringListCapacity(list) << endl;
+void printCapacity(char** list) 
+{
+	cout << "Capacity: " << StringListCapacity(list) << endl;
 }
 
 int main()
 {
-	char** myList;
+	//list[0] reserved for inner info, so your element located at list[x+1]
+	char** myList = nullptr;
 	StringListInit(&myList);
 
-	StringListAdd(&myList, "abcd");
-	StringListAdd(&myList, "abcc");
-	StringListAdd(&myList, "ac");
-	StringListAdd(&myList, "ab");
-	StringListAdd(&myList, "ab");
-	StringListAdd(&myList, "abcsadfc");
-	StringListAdd(&myList, "acgfh");
-	StringListAdd(&myList, "abvbn");
-	StringListAdd(&myList, "abcvbn");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abawed");
-	StringListAdd(&myList, "abaweqwed");
-	StringListAdd(&myList, "abawedew");
-	StringListAdd(&myList, "abawqweed");
-	
-	//StringListRemove(myList, "abawed");
-	StringListRemoveDuplicates(myList);
+	for (int i = 0; i < 112; ++i)
+	{
+		char buff[4];
+		StringListAdd(&myList, itoa(i, buff, 10));
+	}
+
+	//StringListRemoveElementAt(myList, 0);
+	//cout << StringListIndexOf(myList, "5") << endl;
+	//StringListRemove(myList, "5");
+
+	/*StringListAdd(&myList, "5");
+	StringListAdd(&myList, "6");
+	StringListAdd(&myList, "6");
+	StringListRemoveDuplicates(myList);*/
+
+	//StringListRemoveElementAt(myList, StringListIndexOf(myList, "0"));
+
+	//StringListReplaceInStrings(myList, "4", "3");
+
+	//StringListSort(myList);
 
 	printList(myList);
-	printCapacity(myList);
-
-	StringListSort(myList);
-
-
-	StringListReplaceInStrings(myList, "ab", "absdsd");
-
-	printList(myList);
-	printCapacity(myList);
-
 	StringListDestroy(&myList);
-    return 0;
+	return 0;
 }

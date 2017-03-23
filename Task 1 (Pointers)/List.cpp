@@ -28,7 +28,9 @@ void StringListDestroy(char*** list)
 		for (int i = 0; i < size; i++)
 		{
 			if ((*list)[i])
+			{
 				free((*list)[i]);
+			}
 
 			(*list)[i] = nullptr;
 		}
@@ -45,7 +47,7 @@ void StringListAdd(char*** list, char* str)
 	if (size + 2 > StringListCapacity(*list))
 	{
 		//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
-		int new_capacity = (int)(size * 1.5) + 1;
+		int new_capacity = size * 1.5 + 1;
 		char** new_memory = (char**)realloc(*list, new_capacity * sizeof(char**));
 		//if memory allocated right
 		if (new_memory != nullptr)
@@ -64,7 +66,9 @@ void StringListAdd(char*** list, char* str)
 			throw "allocation error";
 		}
 	}
+	//increment size
 	size = ++(((int*)**list)[1]);
+	//add string
 	(*list)[size] = (char*)malloc(strlen(str) + 1);
 	strcpy((*list)[size], str);
 }
@@ -85,7 +89,6 @@ void TryToTrimMemory(char** list)
 	if (capacity / size > 2) 
 	{
 		int new_capacity = size * 1.5 + 1;
-
 		char** new_memory = (char**)realloc(list, new_capacity * sizeof(char**));
 
 		//if memory allocated - assign it to list, else do nothing, because it's not important
@@ -114,7 +117,7 @@ void StringListRemoveElementAt(char** list, int list_index_to_remove) {
 
 void StringListRemove(char** list, char* str)
 {	
-	//-1 to convert real_index to list_index
+	//index + 1 to convert real_index to list_index
 	int index_to_remove = StringListIndexOf(list, str) + 1;
 
 	while (index_to_remove > -1)
@@ -158,7 +161,7 @@ void StringListRemoveDuplicates(char** list)
 	{
 		for (int j = i + 1; j < size; j++)
 		{
-			//we add +1 because at list[0] list info, list indexes is (real_index+1)
+			//we add 1 because at list[0] list info, list indexes is (real_index + 1)
 			if (strcmp(list[i + 1], list[j + 1]) == 0)
 			{
 				StringListRemoveElementAt(list, j + 1);
@@ -174,9 +177,10 @@ void StringListRemoveDuplicates(char** list)
 
 void StringListReplaceInStrings(char** list, char* before, char* after)
 {
-	// +1 to convert list_index to real_index
+	// index + 1 to convert list_index to real_index
 	int index = StringListIndexOf(list, before) + 1;
-	while (index != -1) {
+	while (index != -1) 
+	{
 		list[index] = (char*)realloc(list[index], strlen(after) + 1);
 		strcpy(list[index], after);
 		index = StringListIndexOf(list, before);
