@@ -112,7 +112,7 @@ void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
 	unsigned size = StringListSize(list);
 
 	//check for valid range
-	if (StringListIsValid(list) && list_index_to_remove >= 0 && list_index_to_remove < size)
+	if (StringListIsValid(list) && list_index_to_remove < size)
 	{
 
 		//move elements for fill a gap
