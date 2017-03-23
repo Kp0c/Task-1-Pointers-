@@ -55,10 +55,7 @@ void StringListAdd(char*** list, char* str)
 			{
 				*list = (char**)(((unsigned*)(new_memory)) + 2);
 				//fill all new elements by nullptr
-				for (int i = size + 1; (unsigned)i < new_capacity; i++)
-				{
-					(*list)[i] = nullptr;
-				}
+				memset(*list + size + 1, 0, new_capacity - size);
 				//set new capacity
 				SetCapacity(*list, new_capacity);
 			}
