@@ -3,18 +3,16 @@
 #include "List.h"
 
 const int INITIAL_CAPACITY = 10;
-const int UID = 19970507; // UID for check is list valid
 
 void StringListInit(char*** list, bool force)
 {
-		if (force || list == nullptr || *list == nullptr)
+		if (force || *list == nullptr)
 		{
 			//allocate memory for the first INITIAL_CAPACITY strings
 			*list = (char**)calloc(INITIAL_CAPACITY, sizeof(char**));
 			//allocate memory for capacity and size info
-			**list = (char*)calloc(3, sizeof(int));
+			**list = (char*)calloc(2, sizeof(int));
 			((int*)**list)[0] = INITIAL_CAPACITY;
-			((int*)**list)[2] = UID;
 		}
 		else
 		{
@@ -171,7 +169,7 @@ inline int StringListCapacity(char** list)
 
 inline bool StringListIsValid(char** list)
 {
-	if (list != nullptr && *list != nullptr && ((int*)*list)[2] == UID)
+	if (list != nullptr && *list != nullptr)
 	{
 		return true;
 	}
