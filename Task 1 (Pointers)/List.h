@@ -17,9 +17,9 @@ void StringListRemoveElementAt(char** list, int index_to_remove);
 void StringListRemove(char** list, char* str);
 
 /* Returns the number of items in the list. */
-int StringListSize(char** list);
+inline int StringListSize(char** list);
 /* Returns the capacity of the list. Capacity always allocated at the end of the first string*/
-char StringListCapacity(char** list);
+inline int StringListCapacity(char** list);
 /* Returns the index position of the first occurrence of str in the list. */
 int StringListIndexOf(char** list, char* str);
 
