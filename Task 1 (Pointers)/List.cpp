@@ -48,7 +48,7 @@ void StringListAdd(char*** list, char* str)
 		{
 			//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
 			unsigned new_capacity = (int)(size * 1.5);
-			void* new_memory = (unsigned*)&((*list)[-2]);
+			void* new_memory = &((*list)[-2]);
 			new_memory = (void*)realloc(new_memory, new_capacity * sizeof(char**) + 2 * sizeof(unsigned));
 			//if memory allocated right
 			if (new_memory != nullptr)
@@ -116,15 +116,15 @@ void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
 	{
 
 		//move elements for fill a gap
-		for (unsigned i = list_index_to_remove; i < size; i++)
+		for (unsigned i = list_index_to_remove; i < size - 1; i++)
 		{
 			Swap(&list[i], &list[i + 1]);
 		}
 		//new size
 		--list[-1];
 		//remove last position (it's already moved to a positon - 1)
-		free(list[size]);
-		list[size] = nullptr;
+		free(list[size - 1]);
+		list[size - 1] = nullptr;
 	}
 }
 
