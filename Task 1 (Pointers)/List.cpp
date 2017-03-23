@@ -3,26 +3,28 @@
 #include "List.h"
 
 const int INITIAL_CAPACITY = 10;
+const int UID = 19970507; // UID for check is list valid
 
-void StringListInit(char*** list)
+void StringListInit(char*** list, bool force)
 {
-	if (list == nullptr || *list == nullptr)
-	{
-		//allocate memory for the first INITIAL_CAPACITY strings
-		*list = (char**)calloc(INITIAL_CAPACITY, sizeof(char**));
-		//allocate memory for capacity and size info
-		**list = (char*)calloc(2, sizeof(int));
-		((int*)**list)[0] = INITIAL_CAPACITY;
-	}
-	else
-	{
-		throw "list already initiated";
-	}
+		if (force || list == nullptr || *list == nullptr)
+		{
+			//allocate memory for the first INITIAL_CAPACITY strings
+			*list = (char**)calloc(INITIAL_CAPACITY, sizeof(char**));
+			//allocate memory for capacity and size info
+			**list = (char*)calloc(3, sizeof(int));
+			((int*)**list)[0] = INITIAL_CAPACITY;
+			((int*)**list)[2] = UID;
+		}
+		else
+		{
+			throw "list already initiated";
+		}
 }
 
 void StringListDestroy(char*** list)
 {
-	if (list != nullptr && *list != nullptr)
+	if (list != nullptr && StringListIsValid(*list))
 	{
 		int size = StringListSize(*list);
 		for (int i = 0; i < size; i++)
@@ -42,14 +44,14 @@ void StringListDestroy(char*** list)
 
 void StringListAdd(char*** list, char* str)
 {
-	if (list != nullptr && *list != nullptr)
+	if (list != nullptr && StringListIsValid(*list))
 	{
 		int size = StringListSize(*list);
 		//size + 2 because first element, where we keep special info we don't calculate
 		if (size + 2 > StringListCapacity(*list))
 		{
 			//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
-			int new_capacity = size * 1.5 + 1;
+			int new_capacity = (int)(size * 1.5) + 1;
 			char** new_memory = (char**)realloc(*list, new_capacity * sizeof(char**));
 			//if memory allocated right
 			if (new_memory != nullptr)
@@ -85,7 +87,7 @@ void Swap(char** a, char** b)
 
 void TryToTrimMemory(char** list) 
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		int size = StringListSize(list);
 		int capacity = StringListCapacity(list);
@@ -93,7 +95,7 @@ void TryToTrimMemory(char** list)
 		//trim memory to 1.5 of real size if capacity 2 time more than real size
 		if (capacity / size > 2)
 		{
-			int new_capacity = size * 1.5 + 1;
+			int new_capacity = (int)(size * 1.5) + 1;
 			char** new_memory = (char**)realloc(list, new_capacity * sizeof(char**));
 
 			//if memory allocated - assign it to list, else do nothing, because it's not important
@@ -110,7 +112,7 @@ void StringListRemoveElementAt(char** list, int list_index_to_remove) {
 	int size = StringListSize(list);
 
 	//check for valid range
-	if (list != nullptr && list_index_to_remove > 0 && list_index_to_remove < size)
+	if (StringListIsValid(list) && list_index_to_remove > 0 && list_index_to_remove < size)
 	{
 
 		//move elements for fill a gap
@@ -128,7 +130,7 @@ void StringListRemoveElementAt(char** list, int list_index_to_remove) {
 
 void StringListRemove(char** list, char* str)
 {	
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		//index + 1 to convert real_index to list_index
 		int index_to_remove = StringListIndexOf(list, str) + 1;
@@ -145,7 +147,7 @@ void StringListRemove(char** list, char* str)
 
 inline int StringListSize(char** list)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		return ((int*)*list)[1];
 	}
@@ -157,7 +159,7 @@ inline int StringListSize(char** list)
 
 inline int StringListCapacity(char** list)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		return ((int*)*list)[0];
 	}
@@ -167,9 +169,21 @@ inline int StringListCapacity(char** list)
 	}
 }
 
+inline bool StringListIsValid(char** list)
+{
+	if (list != nullptr && *list != nullptr && ((int*)*list)[2] == UID)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 int StringListIndexOf(char** list, char* str)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		for (int i = 1; list[i] != nullptr && list[i][0] != '\0'; i++)
 		{
@@ -185,7 +199,7 @@ int StringListIndexOf(char** list, char* str)
 
 void StringListRemoveDuplicates(char** list)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		int size = StringListSize(list);
 
@@ -212,7 +226,7 @@ void StringListRemoveDuplicates(char** list)
 
 void StringListReplaceInStrings(char** list, char* before, char* after)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		// index + 1 to convert list_index to real_index
 		int index = StringListIndexOf(list, before) + 1;
@@ -234,7 +248,7 @@ int Comparator(const void* first, const void* second) {
 
 void StringListSort(char** list)
 {
-	if (list != nullptr)
+	if (StringListIsValid(list))
 	{
 		qsort(list + 1, StringListSize(list), sizeof(char*), Comparator);
 	}

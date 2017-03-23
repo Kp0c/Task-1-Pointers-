@@ -24,7 +24,7 @@ int main()
 	char** myList = nullptr;
 	StringListInit(&myList);
 
-	for (int i = 0; i < 112; ++i)
+	for (int i = 0; i < 10000; ++i)
 	{
 		char buff[4];
 		StringListAdd(&myList, itoa(i, buff, 10));

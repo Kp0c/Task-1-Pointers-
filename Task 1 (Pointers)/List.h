@@ -1,7 +1,9 @@
 #pragma once
 
-/* Initializes list */
-void StringListInit(char*** list);
+/* Initializes list 
+ * if force == true - list will initialize it anyway. ATTENTION: may cause memory leak
+ */
+void StringListInit(char*** list, bool force = false);
 /* Destroy list and set pointer to nullptr. */
 void StringListDestroy(char*** list);
 
@@ -20,6 +22,8 @@ void StringListRemove(char** list, char* str);
 inline int StringListSize(char** list);
 /* Returns the capacity of the list. */
 inline int StringListCapacity(char** list);
+/* Check if list valid */
+inline bool StringListIsValid(char** list);
 /* Returns the index position of the first occurrence of str in the list. */
 int StringListIndexOf(char** list, char* str);
 
