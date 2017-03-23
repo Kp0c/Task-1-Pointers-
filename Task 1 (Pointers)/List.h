@@ -48,6 +48,7 @@ inline bool StringListIsValid(char*** list)
 		return false;
 	}
 }
+
 /* Returns the index position of the first occurrence of str in the list. */
 int StringListIndexOf(char** list, char* str);
 

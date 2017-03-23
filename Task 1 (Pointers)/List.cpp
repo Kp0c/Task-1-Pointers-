@@ -13,7 +13,7 @@ void StringListInit(char*** list, bool force)
 
 			unsigned* capacity = (unsigned*)temporary_pointer;
 			*capacity = INITIAL_CAPACITY;
-			//size -> capacity + 1 
+			//capacity + 1 => size
 			*list = (char**)(capacity + 2);
 		}
 		else
@@ -32,8 +32,8 @@ void StringListDestroy(char*** list)
 			free((*list)[i]);
 			(*list)[i] = nullptr;
 		}
-		void* memory_for_free = ((unsigned*)*list) - 2;
 		//delete capacity and size too
+		void* memory_for_free = ((unsigned*)*list) - 2;
 		free(memory_for_free);
 		*list = nullptr;
 	}
@@ -47,9 +47,8 @@ void StringListAdd(char*** list, char* str)
 		if (size + 1 > StringListCapacity(*list))
 		{
 			//actually it need to be 1.618 (see the golden ratio), but we don't need that accuracy
-			unsigned new_capacity = (int)(size * 1.5) + 1;
+			unsigned new_capacity = (int)(size * 1.5);
 			void* new_memory = (unsigned*)&((*list)[-2]);
-			//(unsigned*)(*list)
 			new_memory = (void*)realloc(new_memory, new_capacity * sizeof(char**) + 2 * sizeof(unsigned));
 			//if memory allocated right
 			if (new_memory != nullptr)
@@ -61,8 +60,6 @@ void StringListAdd(char*** list, char* str)
 					(*list)[i] = nullptr;
 				}
 				//set new capacity
-				/*unsigned* new_capacity_pointer = (unsigned*)&(*list)[-2];
-				*new_capacity_pointer = new_capacity;*/
 				SetCapacity(*list, new_capacity);
 			}
 			else
@@ -71,8 +68,6 @@ void StringListAdd(char*** list, char* str)
 			}
 		}
 		//increment size
-		//unsigned* new_size_pointer = (unsigned*)&(*list)[-1];
-		//size = ++(*new_size_pointer);
 		size = (unsigned)((*list)[-1])++;
 		//add string
 		(*list)[size] = (char*)malloc(strlen(str) + 1);
@@ -95,17 +90,21 @@ void TryToTrimMemory(char** list)
 		unsigned capacity = StringListCapacity(list);
 
 		//trim memory to 1.5 of real size if capacity 2 time more than real size
-		if (capacity / size > 2)
+		if (capacity / (size + 1) > 2)
 		{
-			unsigned new_capacity = (int)(size * 1.5) + 1;
-			//TODO: make normal realloc
-			char** new_memory = (char**)realloc(list, new_capacity * sizeof(char**));
+			unsigned new_capacity = (int)(size * 1.5);
+			if (new_capacity < INITIAL_CAPACITY)
+			{
+				new_capacity = INITIAL_CAPACITY;
+			}
+
+			void* new_memory = (unsigned*)&(list[-2]);
+			new_memory = (void*)realloc(new_memory, new_capacity * sizeof(char*) + 2 * sizeof(unsigned));
 
 			//if memory allocated - assign it to list, else do nothing, because it's not important
 			if (new_memory != nullptr)
 			{
-				list = new_memory;
-				//((int*)list[0])[0] = new_capacity;
+				list = (char**)(((unsigned*)(new_memory)) + 2);
 				SetCapacity(list, new_capacity);
 			}
 		}
@@ -125,9 +124,8 @@ void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
 			Swap(&list[i], &list[i + 1]);
 		}
 		//new size
-		//unsigned* new_size_pointer = (unsigned*)&(*list)[-1];
 		--list[-1];
-		//size = ++(*new_size_pointer);
+		//remove last position (it's already moved to a positon - 1)
 		free(list[size]);
 		list[size] = nullptr;
 	}
@@ -225,7 +223,6 @@ void StringListReplaceInStrings(char** list, char* before, char* after)
 {
 	if (StringListIsValid(list))
 	{
-		// index + 1 to convert list_index to real_index
 		int index = StringListIndexOf(list, before);
 		while (index != -1)
 		{

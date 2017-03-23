@@ -9,8 +9,15 @@ void printList(char** list)
 	int size = StringListSize(list);
 	for (int i = 0; i < size; i++)
 	{
-		cout << i << ": " << list[i + 1] << endl;
+		cout << i << ": " << list[i] << endl;
 	}
+
+	if (size == 0)
+	{
+		cout << "list empty" << endl;
+	}
+	cout << "Size: " << StringListSize(list) << endl
+		<< "Capacity: " << StringListCapacity(list) << endl;
 }
 
 void printCapacity(char** list) 
@@ -20,17 +27,19 @@ void printCapacity(char** list)
 
 int main()
 {
-	//list[0] reserved for inner info, so your element located at list[x+1]
 	char** myList = nullptr;
 	StringListInit(&myList);
 
 	for (int i = 0; i < 100; ++i)
 	{
-		char buff[4];
-		StringListAdd(&myList, itoa(i, buff, 10));
+		//char buff[4];
+		//StringListAdd(&myList, itoa(i, buff, 10));
+		StringListAdd(&myList, "5");
 	}
 
-	StringListRemoveElementAt(myList, 0);
+	StringListRemoveDuplicates(myList);
+
+	/*StringListRemoveElementAt(myList, 0);
 	cout << StringListIndexOf(myList, "5") << endl;
 	StringListRemove(myList, "5");
 
@@ -39,11 +48,15 @@ int main()
 	StringListAdd(&myList, "6");
 	StringListRemoveDuplicates(myList);
 
-	StringListRemoveElementAt(myList, StringListIndexOf(myList, "0"));
+	StringListRemoveElementAt(myList, StringListIndexOf(myList, "0"));*/
 
-	StringListReplaceInStrings(myList, "4", "3");
+	/*StringListAdd(&myList, "4");
+	StringListAdd(&myList, "4");
+	StringListAdd(&myList, "4");
+	StringListAdd(&myList, "4");
+	StringListReplaceInStrings(myList, "4", "3");*/
 
-	StringListSort(myList);
+	//StringListSort(myList);
 
 	printList(myList);
 	StringListDestroy(&myList);
