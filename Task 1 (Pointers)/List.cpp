@@ -13,6 +13,7 @@ void StringListInit(char*** list, bool force)
 			//allocate memory for capacity and size info
 			**list = (char*)calloc(2, sizeof(int));
 			((int*)**list)[0] = INITIAL_CAPACITY;
+			((int*)**list)[1] = 0;
 		}
 		else
 		{
@@ -27,9 +28,8 @@ void StringListDestroy(char*** list)
 		int size = StringListSize(*list);
 		for (int i = 1; i < size + 1; i++)
 		{
-			printf("%s", (*list)[i]);
+			if((*list)[i])
 			free((*list)[i]);
-
 			(*list)[i] = nullptr;
 		}
 
