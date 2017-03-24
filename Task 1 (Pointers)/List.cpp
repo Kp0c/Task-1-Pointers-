@@ -39,7 +39,7 @@ void StringListDestroy(char*** list)
 	}
 }
 
-void StringListAdd(char*** list, char* str)
+void StringListAdd(char*** list, const char* str)
 {
 	if (list != nullptr && StringListIsValid(*list))
 	{
@@ -72,7 +72,7 @@ void StringListAdd(char*** list, char* str)
 	}
 }
 
-void Swap(char** a, char** b) 
+void Swap(char** a, char** b)
 {
 	char* temporary_pointer = *a;
 	*a = *b;
@@ -123,12 +123,13 @@ void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
 		//new size
 		--list[-1];
 		//remove last position (it's already moved to a positon - 1)
+		//size - 1 give us last index
 		free(list[size - 1]);
 		list[size - 1] = nullptr;
 	}
 }
 
-void StringListRemove(char** list, char* str)
+void StringListRemove(char** list, const char* str)
 {	
 	if (StringListIsValid(list))
 	{
@@ -144,7 +145,7 @@ void StringListRemove(char** list, char* str)
 	}
 }
 
-unsigned StringListSize(char** list)
+unsigned StringListSize(const char* const* list)
 {
 	if (StringListIsValid(list))
 	{
@@ -156,7 +157,7 @@ unsigned StringListSize(char** list)
 	}
 }
 
-unsigned StringListCapacity(char** list)
+unsigned StringListCapacity(const char* const* list)
 {
 	if (StringListIsValid(list))
 	{
@@ -168,13 +169,13 @@ unsigned StringListCapacity(char** list)
 	}
 }
 
-void SetCapacity(char** list, unsigned value)
+void SetCapacity(char* const* list, unsigned value)
 {
 	unsigned* new_capacity_pointer = (unsigned*)&list[-2];
 	*new_capacity_pointer = value;
 }
 
-int StringListIndexOf(char** list, char* str)
+int StringListIndexOf(const char* const* list, const char* str)
 {
 	unsigned size = StringListSize(list);
 	if (StringListIsValid(list))
@@ -216,7 +217,7 @@ void StringListRemoveDuplicates(char** list)
 	}
 }
 
-void StringListReplaceInStrings(char** list, char* before, char* after)
+void StringListReplaceInStrings(char** list, const char* before, const char* after)
 {
 	if (StringListIsValid(list))
 	{
