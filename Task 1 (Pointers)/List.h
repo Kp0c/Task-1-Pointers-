@@ -10,7 +10,7 @@ void StringListDestroy(char*** list);
 /* Inserts value at the end of the list. */
 void StringListAdd(char*** list, const char* str);
 /* Swap two strings. */
-void Swap(char** a, char** b);
+void Swap(const char** a, const char** b);
 /* Trim memory when capacity bigger than real size 2 time more for avoid specific memory leak. */
 void TryToTrimMemory(char** list);
 /* Remove element at index_to_remove. */

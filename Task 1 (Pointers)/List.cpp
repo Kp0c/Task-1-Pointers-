@@ -72,9 +72,9 @@ void StringListAdd(char*** list, const char* str)
 	}
 }
 
-void Swap(char** a, char** b)
+void Swap(const char** a, const char** b)
 {
-	char* temporary_pointer = *a;
+	const char* temporary_pointer = *a;
 	*a = *b;
 	*b = temporary_pointer;
 }
