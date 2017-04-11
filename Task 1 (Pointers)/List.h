@@ -1,7 +1,7 @@
 #pragma once
 
 /* Initializes list 
- * if force == true - list will ËÛ initialize‚ anyway. ATTENTION: may cause memory leak
+ * if force == true - list will √®√≥ initialize√¢ anyway. ATTENTION: may cause memory leak
  */
 void StringListInit(char*** list, bool force = false);
 /* Destroy list and set pointer to nullptr. */
@@ -27,14 +27,7 @@ void SetCapacity(char* const* list, unsigned value);
 /* Check if list valid */
 inline bool StringListIsValid(const char* const* list)
 {
-	if (list != nullptr)
-	{
-		return true;
-	}
-	else
-	{
-		return false;
-	}
+	return list != nullptr;
 }
 inline bool StringListIsValid(const char* const* const* list)
 {
