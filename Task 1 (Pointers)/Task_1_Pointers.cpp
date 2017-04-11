@@ -30,16 +30,16 @@ int main()
 	char** myList = nullptr;
 	StringListInit(&myList);
 
-	for (int i = 0; i < 100; ++i)
+	for (int i = 0; i < 20; ++i)
 	{
-		//char buff[4];
-		//StringListAdd(&myList, itoa(i, buff, 10));
-		StringListAdd(&myList, "5");
+		char buff[4];
+		StringListAdd(&myList, itoa(i, buff, 10));
+		//StringListAdd(&myList, "5");
 	}
 
-	StringListRemoveDuplicates(myList);
+	//StringListRemoveDuplicates(myList);
 
-	/*StringListRemoveElementAt(myList, 0);
+	StringListRemoveElementAt(myList, 0);
 	cout << StringListIndexOf(myList, "5") << endl;
 	StringListRemove(myList, "5");
 
@@ -48,15 +48,15 @@ int main()
 	StringListAdd(&myList, "6");
 	StringListRemoveDuplicates(myList);
 
-	StringListRemoveElementAt(myList, StringListIndexOf(myList, "0"));*/
+	StringListRemoveElementAt(myList, StringListIndexOf(myList, "0"));
 
-	/*StringListAdd(&myList, "4");
 	StringListAdd(&myList, "4");
 	StringListAdd(&myList, "4");
 	StringListAdd(&myList, "4");
-	StringListReplaceInStrings(myList, "4", "3");*/
+	StringListAdd(&myList, "4");
+	StringListReplaceInStrings(myList, "4", "3");
 
-	//StringListSort(myList);
+	StringListSort(myList);
 
 	printList(myList);
 	StringListDestroy(&myList);

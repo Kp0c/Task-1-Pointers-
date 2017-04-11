@@ -50,13 +50,10 @@ void StringListAdd(char*** list, const char* str)
 			unsigned new_capacity = (int)(size * 1.5);
 			void* new_memory = &((*list)[-2]);
 			new_memory = (void*)realloc(new_memory, new_capacity * sizeof(char**) + 2 * sizeof(unsigned));
-			//if memory allocated right
 			if (new_memory != nullptr)
 			{
 				*list = (char**)(((unsigned*)(new_memory)) + 2);
-				//fill all new elements by nullptr
 				memset(*list + size + 1, 0, new_capacity - size);
-				//set new capacity
 				SetCapacity(*list, new_capacity);
 			}
 			else
@@ -66,7 +63,7 @@ void StringListAdd(char*** list, const char* str)
 		}
 		//increment size
 		size = (unsigned)((*list)[-1])++;
-		//add string
+
 		(*list)[size] = (char*)malloc(strlen(str) + 1);
 		strcpy((*list)[size], str);
 	}
@@ -122,8 +119,7 @@ void StringListRemoveElementAt(char** list, unsigned list_index_to_remove) {
 		}
 		//new size
 		--list[-1];
-		//remove last position (it's already moved to a positon - 1)
-		//size - 1 give us last index
+
 		free(list[size - 1]);
 		list[size - 1] = nullptr;
 	}
@@ -197,7 +193,6 @@ void StringListRemoveDuplicates(char** list)
 	{
 		int size = StringListSize(list);
 
-		//compare all elements
 		for (int i = 0; i < size - 1; i++)
 		{
 			for (int j = i + 1; j < size; j++)
@@ -205,7 +200,6 @@ void StringListRemoveDuplicates(char** list)
 				if (strcmp(list[i], list[j]) == 0)
 				{
 					StringListRemoveElementAt(list, j);
-					//list resized, so new size is..
 					size = StringListSize(list);
 					//we delete 1 element, so we need to decrement j for don't miss any element
 					j--;

@@ -1,7 +1,7 @@
 #pragma once
 
 /* Initializes list 
- * if force == true - list will initialize it anyway. ATTENTION: may cause memory leak
+ * if force == true - list will èó initializeâ anyway. ATTENTION: may cause memory leak
  */
 void StringListInit(char*** list, bool force = false);
 /* Destroy list and set pointer to nullptr. */
